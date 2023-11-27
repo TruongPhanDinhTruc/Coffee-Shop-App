@@ -1,4 +1,4 @@
-import { ScrollView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme'
 import { LinearGradient } from 'expo-linear-gradient'
@@ -6,12 +6,16 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import HeaderBar from '../components/HeaderBar'
 import PaymentFooter from '../components/PaymentFooter'
 import { useStore } from '../store/store';
+import CartItem from '../components/CartItem';
 
-// const CartList = useStore((state) => state.CartList)
-// const CartPrice = useStore((state) => state.CartPrice)
+
 
 const CartScreen = () => {
   const tabBarHeight = useBottomTabBarHeight();
+  const CartList = useStore((state) => state.CartList)
+  const CartPrice = useStore((state) => state.CartPrice)
+
+  // console.log(CartList);
   return (
     <View style={styles.ScreenContainer}>
       <StatusBar backgroundColor={COLORS.primaryBlackHex} />
@@ -21,12 +25,28 @@ const CartScreen = () => {
         <View style={[styles.ScrollViewInnerView, { marginBottom: tabBarHeight }]}>
           <View style={styles.ItemContainer}>
             <HeaderBar title='Cart' />
+            <View style={styles.ListItemContainer}>
+              {CartList.map((data) => (
+                <TouchableOpacity key={data.id} onPress={() => {}}>
+                  <CartItem
+                  id={data.id}
+                  name={data.name}
+                  imagelink_square={data.imagelink_square}
+                  special_ingredient={data.special_ingredient}
+                  roasted={data.roasted}
+                  prices={data.prices}
+                  type={data.type}
+                  incrementCartItemQuantityHandler={()=>{}}
+                  decrementCartItemQuantityHandler={()=>{}}/>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
 
           <PaymentFooter
             buttonPressHandler={() => { }}
             buttonTitle="Pay"
-            price={{ price: 0, currency: '$' }} />
+            price={{ price: CartPrice, currency: '$' }} />
         </View>
       </ScrollView>
     </View>

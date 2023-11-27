@@ -9,9 +9,35 @@ const DetailsScreen = ({ navigation, route }) => {
   const ItemOfIndex = useStore((state) =>
     route.params.type == 'Coffee' ? state.CoffeeList : state.BeanList,
   )[route.params.index];
+  const calculateCartPrice = useStore((state) => state.calculateCartPrice);
+  const addToCart = useStore((state) => state.addToCart);
 
   const [price, setPrice] = useState(ItemOfIndex.prices[0]);
 
+  const addToCarthandler = ({
+    id,
+    index,
+    name,
+    roasted,
+    imagelink_square,
+    special_ingredient,
+    type,
+    price,
+  }) => {
+    addToCart({
+      id,
+      index,
+      name,
+      roasted,
+      imagelink_square,
+      special_ingredient,
+      type,
+      prices: [{ ...price, quantity: 1 }],
+    });
+    calculateCartPrice();
+    navigation.navigate('Cart');
+  };
+  console.log(ItemOfIndex.name);
   return (
     <View style={styles.ScreenContainer}>
       <StatusBar backgroundColor={COLORS.primaryBlackHex} />
@@ -30,7 +56,7 @@ const DetailsScreen = ({ navigation, route }) => {
           average_rating={ItemOfIndex.average_rating}
           ratings_count={ItemOfIndex.ratings_count}
           roasted={ItemOfIndex.roasted}
-          BackHandler={() => {}}
+          BackHandler={() => { }}
           ToggleFavourite={() => { }}
         />
 
@@ -75,9 +101,20 @@ const DetailsScreen = ({ navigation, route }) => {
           </View>
         </View>
         <PaymentFooter
-        price={price}
-        buttonTitle="Add to Cart"
-        buttonPressHandler={()=>{navigation.navigate('Cart')}}
+          price={price}
+          buttonTitle="Add to Cart"
+          buttonPressHandler={() => {
+            addToCarthandler({
+              id: ItemOfIndex.id,
+              index: ItemOfIndex.index,
+              name: ItemOfIndex.name,
+              roasted: ItemOfIndex.roasted,
+              imagelink_square: ItemOfIndex.imagelink_square,
+              special_ingredient: ItemOfIndex.special_ingredient,
+              type: ItemOfIndex.type,
+              price: price,
+            })
+          }}
         />
       </ScrollView>
     </View>
